@@ -6,7 +6,7 @@ require('dotenv').config()
 client.discordTogether = new DiscordTogether(client);
 
 client.on('ready', () => {
-	console.log(`Listoco: ${client.user.tag}!`); 
+	console.log(`Listoco: ${client.user.tag}!`);
 });
 
 client.on('message', async message => {
