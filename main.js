@@ -28,7 +28,7 @@ client.on('ready', () => {
 
 client.on('message', async message => {
     if (message.content === '&help') {
-        return message.channel.send(`&watch2gether => Crea sala para ver videos en youtube`);
+        return message.channel.send(`&w2g => Crea sala para ver videos en youtube`);
     };
     
     if (message.content.includes('paja')) {
@@ -41,7 +41,7 @@ client.on('message', async message => {
     };
     
 
-    if (message.content === '&watch2gether') {
+    if (message.content === '&w2g') {
         if(message.member.voice.channel) {
             client.discordTogether.createTogetherCode(message.member.voice.channelID, 'youtube').then(async invite => {
                 return message.channel.send(`Click aqui para crear/unirse ${invite.code}`);
