@@ -23,12 +23,12 @@ const photos = [
 client.discordTogether = new DiscordTogether(client);
 
 client.on('ready', () => {
-	console.log(`Listoco: ${client.user.tag}!`);
+	//console.log(`Listoco: ${client.user.tag}!`);
 });
 
 client.on('message', async message => {
-    if (message.content === '&help') {
-        return message.channel.send(`&w2g => Crea sala para ver videos en youtube`);
+    if (message.content.startsWith('&help')) {
+        return message.channel.send(`&w2g => Crea sala para ver videos en youtube\n&bounce [usuario] [cantidad de vueltas {default: 1}] => Hace rebotar al usuario por todos los canales de voz una cierta cantidad de veces.`);
     };
     
     if (message.content.includes('paja')) {
@@ -39,15 +39,56 @@ client.on('message', async message => {
         const randomElement = photos[Math.floor(Math.random() * photos.length)];
         return message.channel.send(message.author.toString(), {files: [randomElement]});
     };
-    
 
-    if (message.content === '&w2g') {
+    if (message.content.startsWith('&w2g')) {
         if(message.member.voice.channel) {
             client.discordTogether.createTogetherCode(message.member.voice.channelID, 'youtube').then(async invite => {
                 return message.channel.send(`Click aqui para crear/unirse ${invite.code}`);
             });
-        };
+        }else{
+            return message.channel.send(`Para utilizar este comando debes estar en un canal de voz primero.`);
+        }
     };
+
+    if (message.content.startsWith('&bounce')) {
+        const userToMove = message.mentions.users.first();
+        const guildMember = message.guild.member(userToMove);
+        const channelConnectedTo = guildMember.voice.channel;
+        const args = message.content.trim().split(/ +/g);
+        const timesToRepeat = parseInt(args[2] ?? 1);
+
+        message.delete();
+        
+        if(channelConnectedTo != null){
+            const timeBetweenMoves = 500;
+            const voiceChannels = client.channels.cache.filter(channel => channel.type === 'voice');
+            const voiceChannelsQuantity = voiceChannels.size;
+
+            let index = 0;
+            let timeout = 0;
+
+            for(let i = 1; i <= timesToRepeat; i++){
+                voiceChannels.forEach((channel, channelId) => {
+                    timeout = index * timeBetweenMoves;
+
+                    guildMember.voice.setChannel(channelId).then(() => {
+                        setTimeout(function () {
+                            //console.log(`User ${userToMove.username} moved to ${channel.name}`);
+
+                            if((index) == voiceChannelsQuantity * timesToRepeat){
+                                //console.log(`User ${userToMove.username} moved to original position.`);
+                                guildMember.voice.setChannel(channelConnectedTo.id);
+                            }
+                        }, timeout);
+                    })
+
+                    index++;
+                });
+            }
+        }else{
+            return message.channel.send(`El usuario no se encuentra en un canal de voz.`);
+        }
+    }
 });
 
 client.login(process.env.TOKEN);
