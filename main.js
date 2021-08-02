@@ -55,7 +55,7 @@ client.on('message', async message => {
         const guildMember = message.guild.member(userToMove);
         const channelConnectedTo = guildMember.voice.channel;
         const args = message.content.trim().split(/ +/g);
-        const timesToRepeat = parseInt(args[2] ?? 1);
+        const timesToRepeat = parseInt(args[2] ? args[2] : 1);
 
         message.delete();
         
