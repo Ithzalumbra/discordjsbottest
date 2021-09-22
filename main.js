@@ -31,11 +31,11 @@ client.on('message', async message => {
         return message.channel.send(`&w2g => Crea sala para ver videos en youtube\n&bounce [usuario] [cantidad de vueltas {default: 1}] => Hace rebotar al usuario por todos los canales de voz una cierta cantidad de veces.`);
     };
     
-    if (message.content.includes('paja')) {
+    if (message.content.toLowerCase().includes('paja')) {
         return message.channel.send(message.author.toString(), {files: ["https://cdn.discordapp.com/attachments/692819163458175057/860017361850859520/unknown.png"]});
     };
 
-    if (message.content.includes('puta')) {
+    if (message.content.toLowerCase().includes('puta')) {
         const randomElement = photos[Math.floor(Math.random() * photos.length)];
         return message.channel.send(message.author.toString(), {files: [randomElement]});
     };
